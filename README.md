@@ -1,2 +1,0 @@
-# WeedStrain
-weed sequencing
