@@ -101,8 +101,8 @@ select.onchange = ()=>{
     amountInput.oninput = update;
 
     const wrapper = document.getElementById("treeWrapper");
-    let scale = 1, originX = 0, originY = 0, startX = 0, startY = 0, isDragging = false;
-    const minScale = 0.5, maxScale = 2.5;
+    let scale = 1, originX = 0, originY = 0;
+    let startX = 0, startY = 0, isDragging = false;
 
     function updateTransform(){
         const container = document.getElementById("treeContainer");
@@ -118,15 +118,45 @@ select.onchange = ()=>{
         container.style.transformOrigin = "0 0";
     }
 
-    wrapper.addEventListener("mousedown",(e)=>{ isDragging=true; startX=e.clientX-originX; startY=e.clientY-originY; });
-    window.addEventListener("mouseup",()=>{ isDragging=false; });
-    window.addEventListener("mousemove",(e)=>{ if(!isDragging) return; originX=e.clientX-startX; originY=e.clientY-startY; updateTransform(); });
+    wrapper.addEventListener("mousedown", e => {
+        isDragging = true;
+        startX = e.clientX - originX;
+        startY = e.clientY - originY;
+    });
+    window.addEventListener("mouseup", () => { isDragging = false; });
+    window.addEventListener("mousemove", e => {
+        if(!isDragging) return;
+        originX = e.clientX - startX;
+        originY = e.clientY - startY;
+        updateTransform();
+    });
 
-    wrapper.addEventListener("touchstart", e => { if(e.touches.length === 1){ isDragging = true; startX = e.touches[0].clientX - originX; startY = e.touches[0].clientY - originY; } });
-    wrapper.addEventListener("touchmove", e => { if(!isDragging || e.touches.length !== 1) return; originX = e.touches[0].clientX - startX; originY = e.touches[0].clientY - startY; updateTransform(); });
-    wrapper.addEventListener("touchend", e => { isDragging=false; });
+    wrapper.addEventListener("touchstart", e => {
+        if(e.touches.length === 1){
+            isDragging = true;
+            startX = e.touches[0].clientX - originX;
+            startY = e.touches[0].clientY - originY;
+        }
+    });
 
-    wrapper.addEventListener("wheel",(e)=>{ e.preventDefault(); const delta = e.deltaY<0?0.1:-0.1; scale += delta; if(scale<minScale) scale=minScale; if(scale>maxScale) scale=maxScale; updateTransform(); });
+    wrapper.addEventListener("touchmove", e => {
+        if(!isDragging || e.touches.length !== 1) return;
+        e.preventDefault();
+        originX = e.touches[0].clientX - startX;
+        originY = e.touches[0].clientY - startY;
+        updateTransform();
+    }, {passive:false});
+
+    wrapper.addEventListener("touchend", e => { isDragging = false; });
+
+    wrapper.addEventListener("wheel", e => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.1 : -0.1;
+        scale += delta;
+        if(scale < 0.5) scale = 0.5;
+        if(scale > 2.5) scale = 2.5;
+        updateTransform();
+    });
 
     update();
 };
