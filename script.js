@@ -115,7 +115,7 @@ select.onchange = ()=>{
             scale = wrapperRect.width / containerRect.width;
             if(scale > 1) scale = 1;
             originX = (wrapperRect.width - containerRect.width * scale)/2;
-            originY = 20; 
+            originY = 20;
         }
 
         const minX = wrapperRect.width - containerRect.width*scale - 50;
