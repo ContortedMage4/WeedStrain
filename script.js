@@ -105,7 +105,9 @@ select.onchange = ()=>{
     const wrapper = document.getElementById("treeWrapper");
     let scale = 1, originX = 0, originY = 0;
     let startX = 0, startY = 0, isDragging = false;
-    const minScale = 0.5, maxScale = 2.5;
+
+    const minScale = 0.5;
+    const maxScale = window.innerWidth < 600 ? 3.5 : 2.5;
 
     function updateTransform(initial=false){
         const container = document.getElementById("treeContainer");
@@ -113,8 +115,12 @@ select.onchange = ()=>{
         const containerRect = container.getBoundingClientRect();
 
         if(initial){
-            scale = wrapperRect.width / containerRect.width;
-            if(scale > 1) scale = 1;
+            if(window.innerWidth < 600){
+                scale = wrapperRect.width / containerRect.width * 1.1;
+                if(scale > 1.2) scale = 1.2;
+            } else {
+                scale = 1;
+            }
             originX = (wrapperRect.width - containerRect.width * scale)/2;
             originY = (wrapperRect.height - containerRect.height * scale)/2;
         }
