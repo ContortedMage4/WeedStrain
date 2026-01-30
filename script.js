@@ -88,6 +88,7 @@ select.onchange = ()=>{
         for(let seed in totals){ const cost = totals[seed]*seedCosts[seed]; totalCost+=cost; html += `${seed}: ${totals[seed]} <span style="opacity:.7">($${cost})</span><br>`; }
         html += `<div class="divider"></div><div style="text-align:center;font-size:15px;color:var(--neon);font-weight:bold;">Total: $${totalCost}</div>`;
         calcDiv.innerHTML = html;
+
         const container = document.getElementById("treeContainer");
         container.innerHTML = "";
         const root = document.createElement("div"); root.className="tree-node";
@@ -111,17 +112,21 @@ select.onchange = ()=>{
         const wrapperRect = wrapper.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
 
-        if(initial && window.innerWidth < 600){
+        if(initial){
             scale = wrapperRect.width / containerRect.width;
             if(scale > 1) scale = 1;
             originX = (wrapperRect.width - containerRect.width * scale)/2;
-            originY = 20;
+            originY = (wrapperRect.height - containerRect.height * scale)/2;
         }
 
-        const minX = wrapperRect.width - containerRect.width*scale - 50;
-        const maxX = 50;
-        const minY = wrapperRect.height - containerRect.height*scale - 50;
-        const maxY = 50;
+        const scaledWidth = containerRect.width * scale;
+        const scaledHeight = containerRect.height * scale;
+
+        const minX = Math.min(0, wrapperRect.width - scaledWidth - 20);
+        const maxX = Math.max(0, wrapperRect.width - scaledWidth < 0 ? 0 : 20);
+        const minY = Math.min(0, wrapperRect.height - scaledHeight - 20);
+        const maxY = Math.max(0, wrapperRect.height - scaledHeight < 0 ? 0 : 20);
+
         originX = Math.min(Math.max(originX, minX), maxX);
         originY = Math.min(Math.max(originY, minY), maxY);
 
@@ -129,45 +134,15 @@ select.onchange = ()=>{
         container.style.transformOrigin = "0 0";
     }
 
-    wrapper.addEventListener("mousedown", e => {
-        isDragging = true;
-        startX = e.clientX - originX;
-        startY = e.clientY - originY;
-    });
+    wrapper.addEventListener("mousedown", e => { isDragging = true; startX = e.clientX - originX; startY = e.clientY - originY; });
     window.addEventListener("mouseup", () => { isDragging = false; });
-    window.addEventListener("mousemove", e => {
-        if(!isDragging) return;
-        originX = e.clientX - startX;
-        originY = e.clientY - startY;
-        updateTransform();
-    });
+    window.addEventListener("mousemove", e => { if(!isDragging) return; originX = e.clientX - startX; originY = e.clientY - startY; updateTransform(); });
 
-    wrapper.addEventListener("touchstart", e => {
-        if(e.touches.length === 1){
-            isDragging = true;
-            startX = e.touches[0].clientX - originX;
-            startY = e.touches[0].clientY - originY;
-        }
-    });
+    wrapper.addEventListener("touchstart", e => { if(e.touches.length===1){ isDragging=true; startX=e.touches[0].clientX-originX; startY=e.touches[0].clientY-originY; } });
+    wrapper.addEventListener("touchmove", e => { if(!isDragging||e.touches.length!==1)return;e.preventDefault(); originX=e.touches[0].clientX-startX; originY=e.touches[0].clientY-startY; updateTransform(); }, {passive:false});
+    wrapper.addEventListener("touchend", e => { isDragging=false; });
 
-    wrapper.addEventListener("touchmove", e => {
-        if(!isDragging || e.touches.length !== 1) return;
-        e.preventDefault();
-        originX = e.touches[0].clientX - startX;
-        originY = e.touches[0].clientY - startY;
-        updateTransform();
-    }, {passive:false});
-
-    wrapper.addEventListener("touchend", e => { isDragging = false; });
-
-    wrapper.addEventListener("wheel", e => {
-        e.preventDefault();
-        const delta = e.deltaY < 0 ? 0.1 : -0.1;
-        scale += delta;
-        if(scale < minScale) scale = minScale;
-        if(scale > maxScale) scale = maxScale;
-        updateTransform();
-    });
+    wrapper.addEventListener("wheel", e => { e.preventDefault(); const delta=e.deltaY<0?0.1:-0.1; scale+=delta; if(scale<minScale)scale=minScale; if(scale>maxScale)scale=maxScale; updateTransform(); });
 
     update();
 };
