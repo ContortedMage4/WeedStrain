@@ -107,7 +107,7 @@ select.onchange = ()=>{
     let startX = 0, startY = 0, isDragging = false;
 
     const minScale = 0.5;
-    const maxScale = window.innerWidth < 600 ? 3.5 : 2.5;
+    const maxScale = window.innerWidth < 600 ? 4 : 2.5;
 
     function updateTransform(initial=false){
         const container = document.getElementById("treeContainer");
@@ -116,8 +116,8 @@ select.onchange = ()=>{
 
         if(initial){
             if(window.innerWidth < 600){
-                scale = wrapperRect.width / containerRect.width * 1.1;
-                if(scale > 1.2) scale = 1.2;
+                scale = wrapperRect.width / containerRect.width * 0.8;
+                if(scale > 0.95) scale = 0.95;
             } else {
                 scale = 1;
             }
@@ -128,10 +128,10 @@ select.onchange = ()=>{
         const scaledWidth = containerRect.width * scale;
         const scaledHeight = containerRect.height * scale;
 
-        const minX = Math.min(0, wrapperRect.width - scaledWidth - 20);
-        const maxX = Math.max(0, wrapperRect.width - scaledWidth < 0 ? 0 : 20);
-        const minY = Math.min(0, wrapperRect.height - scaledHeight - 20);
-        const maxY = Math.max(0, wrapperRect.height - scaledHeight < 0 ? 0 : 20);
+        const minX = Math.min(0, wrapperRect.width - scaledWidth - 50);
+        const maxX = Math.max(0, wrapperRect.width - scaledWidth < 0 ? 0 : 50);
+        const minY = Math.min(0, wrapperRect.height - scaledHeight - 50);
+        const maxY = Math.max(0, wrapperRect.height - scaledHeight < 0 ? 0 : 50);
 
         originX = Math.min(Math.max(originX, minX), maxX);
         originY = Math.min(Math.max(originY, minY), maxY);
