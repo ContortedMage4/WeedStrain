@@ -15,6 +15,7 @@ const strains = {
 
 const select = document.getElementById("strainSelect");
 const info = document.getElementById("info");
+
 for(let name in strains){
     const opt = document.createElement("option");
     opt.value = name;
@@ -93,7 +94,7 @@ select.onchange = ()=>{
         root.innerHTML=`<strong>${name}</strong><div class="seq">${s.seq}</div><div style="opacity:.6;font-size:11px">x${amt}</div>`;
         const tree = buildTree(name, amt); if(tree) root.appendChild(tree);
         container.appendChild(root);
-        updateTransform();
+        updateTransform(true);
     }
 
     minusBtn.onclick=()=>{ let v=parseInt(amountInput.value)||1; if(v>1) amountInput.value=v-1; update(); };
@@ -103,17 +104,27 @@ select.onchange = ()=>{
     const wrapper = document.getElementById("treeWrapper");
     let scale = 1, originX = 0, originY = 0;
     let startX = 0, startY = 0, isDragging = false;
+    const minScale = 0.5, maxScale = 2.5;
 
-    function updateTransform(){
+    function updateTransform(initial=false){
         const container = document.getElementById("treeContainer");
         const wrapperRect = wrapper.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
+
+        if(initial && window.innerWidth < 600){
+            scale = wrapperRect.width / containerRect.width;
+            if(scale > 1) scale = 1;
+            originX = (wrapperRect.width - containerRect.width * scale)/2;
+            originY = 20; 
+        }
+
         const minX = wrapperRect.width - containerRect.width*scale - 50;
         const maxX = 50;
         const minY = wrapperRect.height - containerRect.height*scale - 50;
         const maxY = 50;
         originX = Math.min(Math.max(originX, minX), maxX);
         originY = Math.min(Math.max(originY, minY), maxY);
+
         container.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
         container.style.transformOrigin = "0 0";
     }
@@ -153,8 +164,8 @@ select.onchange = ()=>{
         e.preventDefault();
         const delta = e.deltaY < 0 ? 0.1 : -0.1;
         scale += delta;
-        if(scale < 0.5) scale = 0.5;
-        if(scale > 2.5) scale = 2.5;
+        if(scale < minScale) scale = minScale;
+        if(scale > maxScale) scale = maxScale;
         updateTransform();
     });
 
