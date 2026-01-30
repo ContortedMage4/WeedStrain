@@ -159,7 +159,7 @@ input[type=number] {
 }
 
 .tree-wrapper {
-    overflow: hidden;
+    overflow: auto; /* allow scroll on mobile if tree too wide */
     cursor: grab;
     user-select: none;
     touch-action: none;
@@ -184,7 +184,7 @@ input[type=number] {
     gap: 48px;
     position: relative;
     margin-top: 22px;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap; /* keep same layout on mobile */
 }
 
 .tree-node {
@@ -222,10 +222,6 @@ input[type=number] {
 @media (max-width:600px) {
     .parents-row {
         flex-direction: column;
-    }
-    .tree-level {
-        gap: 28px;
-        flex-wrap: wrap;
     }
     .amount-control button {
         width: 32px;
