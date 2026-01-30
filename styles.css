@@ -93,6 +93,7 @@ select {
     align-items: center;
     gap: 6px;
     margin-top: 6px;
+    flex-wrap: nowrap;
 }
 
 .amount-control button {
@@ -159,7 +160,7 @@ input[type=number] {
 }
 
 .tree-wrapper {
-    overflow: auto; /* allow scroll on mobile if tree too wide */
+    overflow: auto;
     cursor: grab;
     user-select: none;
     touch-action: none;
@@ -184,7 +185,7 @@ input[type=number] {
     gap: 48px;
     position: relative;
     margin-top: 22px;
-    flex-wrap: nowrap; /* keep same layout on mobile */
+    flex-wrap: nowrap;
 }
 
 .tree-node {
@@ -223,17 +224,21 @@ input[type=number] {
     .parents-row {
         flex-direction: column;
     }
-
+    .tree-level {
+        gap: 48px;
+        flex-wrap: nowrap;
+    }
+    .amount-control {
+        gap: 4px;
+    }
     .amount-control button {
         width: 28px;
         height: 28px;
         font-size: 12px;
         padding: 2px 4px;
     }
-
     input[type=number] {
         width: 40px;
         font-size: 13px;
     }
 }
-
