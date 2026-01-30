@@ -1,4 +1,3 @@
-/* Data */
 const baseSeeds = ["Lemon Haze","Blue Dream","Northern Lights"];
 const seedCosts = {"Lemon Haze":1000,"Blue Dream":1000,"Northern Lights":1000};
 const strains = {
@@ -14,7 +13,6 @@ const strains = {
     "Cherry Snowman": { parent1: {"Pink Kush":1}, parent2: {"Cherry Pie":2}, seq:"D3, C1, A2, B4" }
 };
 
-/* Populate dropdown */
 const select = document.getElementById("strainSelect");
 const info = document.getElementById("info");
 for(let name in strains){
@@ -24,7 +22,6 @@ for(let name in strains){
     select.appendChild(opt);
 }
 
-/* Helpers */
 function getBaseTotals(name, amount, totals){
     if(baseSeeds.includes(name)){ totals[name] = (totals[name]||0)+amount; return; }
     const s = strains[name]; if(!s) return;
@@ -36,7 +33,6 @@ function formatParent(obj){
     return Object.entries(obj).map(([k,v])=>`${k} x${v}`).join("<br>");
 }
 
-/* Build tree */
 function buildTree(name, amount){
     const s = strains[name]; if(!s) return null;
     const level = document.createElement("div"); level.className="tree-level";
@@ -52,7 +48,6 @@ function buildTree(name, amount){
     return level;
 }
 
-/* Main */
 select.onchange = ()=>{
     const name = select.value;
     if(!name){ info.style.display="none"; return; }
@@ -86,23 +81,18 @@ select.onchange = ()=>{
 
     function update(){
         let amt = parseInt(amountInput.value)||1; if(amt<1){ amt=1; amountInput.value=1; }
-
-        /* Cost */
         let totals = {}; let totalCost = 0;
         getBaseTotals(name, amt, totals);
         let html = `<span class="label">Base Seeds</span><br><br>`;
         for(let seed in totals){ const cost = totals[seed]*seedCosts[seed]; totalCost+=cost; html += `${seed}: ${totals[seed]} <span style="opacity:.7">($${cost})</span><br>`; }
         html += `<div class="divider"></div><div style="text-align:center;font-size:15px;color:var(--neon);font-weight:bold;">Total: $${totalCost}</div>`;
         calcDiv.innerHTML = html;
-
-        /* Tree */
         const container = document.getElementById("treeContainer");
         container.innerHTML = "";
         const root = document.createElement("div"); root.className="tree-node";
         root.innerHTML=`<strong>${name}</strong><div class="seq">${s.seq}</div><div style="opacity:.6;font-size:11px">x${amt}</div>`;
         const tree = buildTree(name, amt); if(tree) root.appendChild(tree);
         container.appendChild(root);
-
         updateTransform();
     }
 
@@ -110,25 +100,20 @@ select.onchange = ()=>{
     plusBtn.onclick=()=>{ let v=parseInt(amountInput.value)||1; amountInput.value=v+1; update(); };
     amountInput.oninput = update;
 
-    /* Zoom & Drag */
     const wrapper = document.getElementById("treeWrapper");
     let scale = 1, originX = 0, originY = 0, startX = 0, startY = 0, isDragging = false;
-
     const minScale = 0.5, maxScale = 2.5;
 
     function updateTransform(){
         const container = document.getElementById("treeContainer");
         const wrapperRect = wrapper.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
-
         const minX = wrapperRect.width - containerRect.width*scale - 50;
         const maxX = 50;
         const minY = wrapperRect.height - containerRect.height*scale - 50;
         const maxY = 50;
-
         originX = Math.min(Math.max(originX, minX), maxX);
         originY = Math.min(Math.max(originY, minY), maxY);
-
         container.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
         container.style.transformOrigin = "0 0";
     }
@@ -137,14 +122,11 @@ select.onchange = ()=>{
     window.addEventListener("mouseup",()=>{ isDragging=false; });
     window.addEventListener("mousemove",(e)=>{ if(!isDragging) return; originX=e.clientX-startX; originY=e.clientY-startY; updateTransform(); });
 
-    wrapper.addEventListener("wheel",(e)=>{
-        e.preventDefault();
-        const delta = e.deltaY<0?0.1:-0.1;
-        scale += delta;
-        if(scale<minScale) scale=minScale;
-        if(scale>maxScale) scale=maxScale;
-        updateTransform();
-    });
+    wrapper.addEventListener("touchstart", e => { if(e.touches.length === 1){ isDragging = true; startX = e.touches[0].clientX - originX; startY = e.touches[0].clientY - originY; } });
+    wrapper.addEventListener("touchmove", e => { if(!isDragging || e.touches.length !== 1) return; originX = e.touches[0].clientX - startX; originY = e.touches[0].clientY - startY; updateTransform(); });
+    wrapper.addEventListener("touchend", e => { isDragging=false; });
+
+    wrapper.addEventListener("wheel",(e)=>{ e.preventDefault(); const delta = e.deltaY<0?0.1:-0.1; scale += delta; if(scale<minScale) scale=minScale; if(scale>maxScale) scale=maxScale; updateTransform(); });
 
     update();
 };
