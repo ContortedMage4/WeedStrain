@@ -8,10 +8,11 @@ body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: url("Background.png") center/110% no-repeat;
+    background: url("Background.png") center/cover no-repeat;
     filter: blur(8px) brightness(0.55);
     z-index: -2;
 }
+
 
 body::after {
     content: "";
@@ -234,3 +235,4 @@ input[type=number] {
         width: 80px;
     }
 }
+
