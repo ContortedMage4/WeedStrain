@@ -231,6 +231,12 @@ input[type=number] {
     .amount-control {
         gap: 4px;
     }
+      .tree-node {
+        min-width: 80px;
+        max-width: 100px;
+        padding: 6px 8px;
+        font-size: 11px;
+    }
     .amount-control button {
         width: 28px;
         height: 28px;
@@ -242,3 +248,4 @@ input[type=number] {
         font-size: 13px;
     }
 }
+
