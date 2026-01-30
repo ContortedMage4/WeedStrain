@@ -13,7 +13,6 @@ body::before {
     z-index: -2;
 }
 
-
 body::after {
     content: "";
     position: fixed;
@@ -97,15 +96,19 @@ select {
 }
 
 .amount-control button {
-    flex: 1;
-    min-width: 40px;
     background: rgba(0,0,0,0.6);
     border: 1px solid var(--border);
     color: var(--neon);
     border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 16px;
+    padding: 4px 8px;
+    font-size: 14px;
     cursor: pointer;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .amount-control button:hover {
@@ -113,7 +116,7 @@ select {
 }
 
 input[type=number] {
-    width: 60px;
+    width: 50px;
     padding: 4px;
     background: black;
     color: white;
@@ -146,7 +149,7 @@ input[type=number] {
     opacity: 0.6;
 }
 
-.visual-tree-box{
+.visual-tree-box {
     background: rgba(5,5,10,0.85);
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -159,14 +162,14 @@ input[type=number] {
     overflow: hidden;
     cursor: grab;
     user-select: none;
-    touch-action: pan-x pan-y;
+    touch-action: none;
 }
 
 .tree-wrapper:active {
     cursor: grabbing;
 }
 
-.tree-container{
+.tree-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -175,7 +178,7 @@ input[type=number] {
     transition: transform 0.05s linear;
 }
 
-.tree-level{
+.tree-level {
     display: flex;
     justify-content: center;
     gap: 48px;
@@ -184,7 +187,7 @@ input[type=number] {
     flex-wrap: nowrap;
 }
 
-.tree-node{
+.tree-node {
     background: linear-gradient(145deg, rgba(28,28,36,0.95), rgba(14,14,18,0.95));
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -199,12 +202,12 @@ input[type=number] {
     transition: all 0.2s ease;
 }
 
-.tree-node:hover{
+.tree-node:hover {
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 0 16px rgba(0,255,102,0.45), inset 0 0 8px rgba(0,255,102,0.2);
 }
 
-.tree-node .seq{
+.tree-node .seq {
     margin-top: 3px;
     font-size: 10px;
     color: #9fffc7;
@@ -216,23 +219,22 @@ input[type=number] {
     display: none;
 }
 
-@media (max-width:600px){
-    .parents-row{
+@media (max-width:600px) {
+    .parents-row {
         flex-direction: column;
     }
-
-    .tree-level{
+    .tree-level {
         gap: 28px;
         flex-wrap: wrap;
     }
-
     .amount-control button {
-        flex: none;
-        width: 100%;
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+        padding: 3px 6px;
     }
-
-    input[type=number]{
-        width: 80px;
+    input[type=number] {
+        width: 50px;
+        font-size: 14px;
     }
 }
-
